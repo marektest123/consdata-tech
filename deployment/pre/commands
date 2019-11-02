@@ -1,0 +1,40 @@
+####################################################################
+#clear
+oc delete all --selector app=consdata-tech-deployment
+oc tag -d consdata-tech/consdata-tech-deployment:v1
+oc delete consdata-tech/consdata-tech-deployment:v1
+
+#init build
+oc create imagestream consdata-tech-deployment (oc apply -f deployment/imageStream.yml)
+oc apply -f deployment/blue-green-1/build.yml
+
+#build v1 (blue)
+oc start-build consdata-tech-deployment-s2i --from-dir=target  --follow
+oc tag consdata-tech-deployment:latest consdata-tech/consdata-tech-deployment:v1
+
+#create deployment blue
+oc apply -f deployment/blue-green-1/deployment-blue.yml
+
+#create service
+oc apply -f deployment/blue-green-1/service-v1.yml
+
+#expose service
+oc apply -f deployment/blue-green-1/route.yml
+
+#build v2 (green)
+oc start-build consdata-tech-deployment-s2i --from-dir=target  --follow
+oc tag consdata-tech-deployment:latest consdata-tech/consdata-tech-deployment:v2
+
+#create deployment green
+oc apply -f deployment/blue-green-1/deployment-green.yml
+
+#switch blue-> green
+#a)
+oc apply -f deployment/blue-green-1/service-v2.yml
+#b)
+oc patch service consdata-tech-deployment-service -p '{"spec":{"selector":{"version": "v1"}}}'
+
+#clear
+oc delete all --selector app=consdata-tech-deployment
+
+#########################################################################################

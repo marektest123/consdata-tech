@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    labels:
+        app: consdata-tech-deployment
+    name: consdata-tech-deployment-service
+spec:
+    selector:
+        app: consdata-tech-deployment
+        version: "v1"
+    ports:
+        - name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 8080

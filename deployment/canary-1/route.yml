@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Route
+metadata:
+    name: consdata-tech-deployment
+    labels:
+        app: consdata-tech-deployment
+spec:
+    host: consdata-tech-deployment.ib24.consdata.local
+    to:
+        kind: Service
+        name: consdata-tech-deployment-service
