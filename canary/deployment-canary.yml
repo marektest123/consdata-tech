@@ -1,0 +1,66 @@
+kind: "DeploymentConfig"
+apiVersion: "v1"
+metadata:
+    name: "consdata-tech-demo-canary"
+    labels:
+        app: "consdata-tech-demo"
+        version: "canary"
+spec:
+    template:
+        metadata:
+            labels:
+                name: "consdata-tech-demo"
+                app: "consdata-tech-demo"
+                version: "canary"
+        spec:
+            containers:
+                -   name: "consdata-tech-demo"
+                    image: "docker-registry.default.svc:5000/consdata-tech/consdata-tech-demo:canary"
+                    ports:
+                        -   containerPort: 8080
+                            protocol: "TCP"
+                    livenessProbe:
+                        failureThreshold: 3
+                        httpGet:
+                            path: /actuator/health
+                            port: 8080
+                            scheme: HTTP
+                        initialDelaySeconds: 20
+                        periodSeconds: 10
+                        successThreshold: 1
+                        timeoutSeconds: 1
+                        name: consdata-tech-demo
+                    readinessProbe:
+                        failureThreshold: 3
+                        httpGet:
+                            path: /actuator/health
+                            port: 8080
+                            scheme: HTTP
+                        initialDelaySeconds: 10
+                        periodSeconds: 10
+                        successThreshold: 1
+                        timeoutSeconds: 1
+                    resources:
+                        limits:
+                            cpu: 1000Mi
+                            memory: 200Mi
+                        requests:
+                            cpu: 1m
+                            memory: 1Mi
+    replicas: 5
+    strategy:
+        type: "Rolling"
+    paused: false
+    revisionHistoryLimit: 10
+    minReadySeconds: 0
+    triggers:
+        -   imageChangeParams:
+                automatic: true
+                containerNames:
+                    - consdata-tech-demo
+                from:
+                    kind: ImageStreamTag
+                    name: 'consdata-tech-demo:canary'
+                    namespace: consdata-tech
+            type: ImageChange
+

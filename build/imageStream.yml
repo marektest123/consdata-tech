@@ -1,0 +1,8 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+    labels:
+        app: consdata-tech-demo
+    name: consdata-tech-demo
+    namespace: consdata-tech
+

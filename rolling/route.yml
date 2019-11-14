@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Route
+metadata:
+    name: consdata-tech-demo-route
+    labels:
+        app: consdata-tech-demo
+spec:
+    host: demo.127.0.0.1.nip.io
+    to:
+        kind: Service
+        name: consdata-tech-demo-service

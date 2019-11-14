@@ -1,0 +1,21 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+    labels:
+        app: consdata-tech-demo
+    name: consdata-tech-demo-s2i
+    namespace: consdata-tech
+spec:
+    output:
+        to:
+            kind: ImageStreamTag
+            name: 'consdata-tech-demo:latest'
+    source:
+        binary: {}
+        type: Binary
+    strategy:
+        sourceStrategy:
+            from:
+                kind: DockerImage
+                name: 'fabric8/s2i-java:latest-java11'
+        type: Source

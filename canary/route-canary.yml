@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Route
+metadata:
+    name: consdata-tech-canary-demo
+    labels:
+        app: consdata-tech-demo
+spec:
+    host: canary.127.0.0.1.nip.io
+    port:
+        targetPort: http
+    to:
+        kind: Service
+        name: consdata-tech-demo-service
+        weight: 90
+    alternateBackends:
+        - kind: Service
+          name: consdata-tech-demo-canary-service
+          weight: 10
+
+    wildcardPolicy: None
